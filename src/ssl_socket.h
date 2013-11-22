@@ -1,5 +1,9 @@
 // OpenSSLTest
 
+#ifndef SSL_SOCKET_H_
+#define SSL_SOCKET_H_
+
+#include "scoped_openssl.h"
 #include "socket.h"
 #include <openssl/ssl.h>
 
@@ -12,8 +16,11 @@ public:
 
 protected:
   virtual bool DoConnect(const std::string& connectionString);
+  virtual void DoDisconnect();
 
-  SSL* _ssl;
+  ScopedOpenSSL<SSL_CTX, SSL_CTX_free> _ctx;
 };
 
 }  // namespace net
+
+#endif  // SSL_SOCKET_H_

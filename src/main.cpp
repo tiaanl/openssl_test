@@ -1,6 +1,6 @@
 // OpenSSLTest
 
-#include "socket.h"
+#include "ssl_socket.h"
 #include <crtdbg.h>
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
@@ -13,18 +13,18 @@
 
 int Run() {
   // Initialize OpenSSL
-  SSL_load_error_strings();
   ERR_load_BIO_strings();
+  SSL_load_error_strings();
   OpenSSL_add_all_algorithms();
 
-  net::Socket socket;
-  if (!socket.Connect("localhost", 80))
+  net::SSLSocket socket;
+  if (!socket.Connect("www.verisign.com", 443))
     return 1;
 
   std::stringstream requestStream;
-  requestStream << "GET / HTTP/1.0\n"
-                << "Server: ubuntu-build.playsafesa.com\n"
-                << "\n";
+  requestStream << "GET / HTTP/1.0\r\n"
+                << "Host: www.verisign.com\r\n"
+                << "\r\n";
 
   std::string requestData(requestStream.str());
   int bytesWritten = socket.Write(requestData.data(), requestData.size());
@@ -32,8 +32,14 @@ int Run() {
     return 1;
 
   std::vector<char> responseBuffer(4096, 0);
-  int bytesRead = socket.Read(responseBuffer.data(), responseBuffer.size());
-  std::cout << responseBuffer.data() << std::endl;
+
+  for (;;) {
+    int bytesRead = socket.Read(responseBuffer.data(), responseBuffer.size() - 1);
+    if (bytesRead <= 0)
+      break;
+    responseBuffer[bytesRead] = '\0';
+    std::cout << responseBuffer.data() << std::endl;
+  }
 
   return 0;
 }

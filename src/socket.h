@@ -5,6 +5,7 @@
 
 #include <openssl/bio.h>
 #include <string>
+#include "scoped_openssl.h"
 
 namespace net {
 
@@ -12,6 +13,8 @@ class Socket {
 public:
   Socket();
   virtual ~Socket();
+
+  bool IsConnected() const { return _connected; }
 
   bool Connect(const std::string& hostname, int port);
   void Disconnect();
@@ -21,8 +24,12 @@ public:
 
 protected:
   virtual bool DoConnect(const std::string& connectionString);
+  virtual void DoDisconnect();
 
-  BIO* _bio;
+  // Whether the connection is active or not.
+  bool _connected;
+
+  ScopedOpenSSL<BIO, BIO_free_all> _bio;
 };
 
 }  // namespace net

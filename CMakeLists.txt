@@ -8,13 +8,15 @@ include_directories("${OPENSSL_ROOT}/include")
 
 add_executable("openssl_test"
   "src/main.cpp"
-  "src/socket.h"
+  "src/scoped_openssl.h"
   "src/socket.cpp"
-  "src/ssl_socket.h"
+  "src/socket.h"
   "src/ssl_socket.cpp"
+  "src/ssl_socket.h"
 )
 
 target_link_libraries("openssl_test"
   "${OPENSSL_ROOT}/lib/libeay32.lib"
   "${OPENSSL_ROOT}/lib/ssleay32.lib"
+  "ws2_32.lib"
 )
