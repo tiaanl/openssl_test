@@ -7,12 +7,14 @@ set(OPENSSL_ROOT "" CACHE PATH "Path to root of OpenSSL")
 include_directories("${OPENSSL_ROOT}/include")
 
 add_executable("openssl_test"
+  "src/client_socket.cpp"
+  "src/client_socket.h"
   "src/main.cpp"
   "src/scoped_openssl.h"
   "src/socket.cpp"
   "src/socket.h"
-  "src/ssl_socket.cpp"
-  "src/ssl_socket.h"
+  "src/client_ssl_socket.cpp"
+  "src/client_ssl_socket.h"
 )
 
 target_link_libraries("openssl_test"

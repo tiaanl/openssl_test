@@ -1,15 +1,16 @@
 // OpenSSLTest
 
-#include "ssl_socket.h"
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <sstream>
+#include <vector>
 #include <crtdbg.h>
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <cstdio>
+#include "client_ssl_socket.h"
 
 int Run() {
   // Initialize OpenSSL
@@ -17,8 +18,10 @@ int Run() {
   SSL_load_error_strings();
   OpenSSL_add_all_algorithms();
 
-  net::SSLSocket socket;
-  if (!socket.Connect("www.verisign.com", 443))
+  std::unique_ptr<net::ClientSSLSocket> socket(new net::ClientSSLSocket());
+
+#if 0
+  if (!socket->Connect("www.verisign.com", 443))
     return 1;
 
   std::stringstream requestStream;
@@ -27,19 +30,20 @@ int Run() {
                 << "\r\n";
 
   std::string requestData(requestStream.str());
-  int bytesWritten = socket.Write(requestData.data(), requestData.size());
+  int bytesWritten = socket->Write(requestData.data(), requestData.size());
   if (bytesWritten <= 0)
     return 1;
 
   std::vector<char> responseBuffer(4096, 0);
 
   for (;;) {
-    int bytesRead = socket.Read(responseBuffer.data(), responseBuffer.size() - 1);
+    int bytesRead = socket->Read(responseBuffer.data(), responseBuffer.size() - 1);
     if (bytesRead <= 0)
       break;
     responseBuffer[bytesRead] = '\0';
     std::cout << responseBuffer.data() << std::endl;
   }
+#endif  // 0
 
   return 0;
 }

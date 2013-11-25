@@ -23,13 +23,14 @@ public:
   int Write(const char* buffer, int bufferSize);
 
 protected:
-  virtual bool DoConnect(const std::string& connectionString);
-  virtual void DoDisconnect();
+  virtual bool DoConnect(const std::string& connectionString) = 0;
+  virtual void DoDisconnect() = 0;
+
+  virtual int DoRead(char* buffer, int bufferSize) = 0;
+  virtual int DoWrite(const char* buffer, int bufferSize) = 0;
 
   // Whether the connection is active or not.
   bool _connected;
-
-  ScopedOpenSSL<BIO, BIO_free_all> _bio;
 };
 
 }  // namespace net
