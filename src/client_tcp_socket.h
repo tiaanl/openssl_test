@@ -1,17 +1,17 @@
 // OpenSSLTest
 
-#ifndef SSL_SOCKET_H_
-#define SSL_SOCKET_H_
+#ifndef CLIENT_TCP_SOCKET_H_
+#define CLIENT_TCP_SOCKET_H_
 
-#include <openssl/ssl.h>
 #include "client_socket.h"
+#include "scoped_openssl.h"
 
 namespace net {
 
-class ClientSSLSocket : public ClientSocket {
+class ClientTCPSocket : public ClientSocket {
 public:
-  ClientSSLSocket();
-  virtual ~ClientSSLSocket();
+  ClientTCPSocket();
+  virtual ~ClientTCPSocket();
 
   // Override ClientSocket
   virtual bool Connect(std::string hostAndPort) override;
@@ -22,9 +22,8 @@ public:
 
 private:
   ScopedOpenSSL<BIO, BIO_free_all> _bio;
-  ScopedOpenSSL<SSL_CTX, SSL_CTX_free> _ctx;
 };
 
 }  // namespace net
 
-#endif  // SSL_SOCKET_H_
+#endif  // CLIENT_TCP_SOCKET_H_

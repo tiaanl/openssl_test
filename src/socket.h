@@ -9,6 +9,7 @@
 
 namespace net {
 
+/*
 class Socket {
 public:
   Socket();
@@ -31,6 +32,15 @@ protected:
 
   // Whether the connection is active or not.
   bool _connected;
+};
+*/
+
+class Socket {
+public:
+  virtual ~Socket() {}
+
+  virtual bool Read(char* buffer, int bufferSize, int* bytesRead) = 0;
+  virtual bool Write(const char* buffer, int bufferSize, int* bytesWritten) = 0;
 };
 
 }  // namespace net

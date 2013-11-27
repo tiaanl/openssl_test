@@ -11,17 +11,10 @@ namespace net {
 
 class ClientSocket : public Socket {
 public:
-  ClientSocket();
-  virtual ~ClientSocket();
+  virtual ~ClientSocket() {}
 
-protected:
-  virtual bool DoConnect(const std::string& connectionString) override;
-  virtual void DoDisconnect() override;
-
-  virtual int DoRead(char* buffer, int bufferSize) override;
-  virtual int DoWrite(const char* buffer, int bufferSize) override;
-
-  ScopedOpenSSL<BIO, BIO_free_all> _bio;
+  virtual bool Connect(std::string hostAndPort) = 0;
+  virtual void Disconnect() = 0;
 };
 
 }  // namespace net
